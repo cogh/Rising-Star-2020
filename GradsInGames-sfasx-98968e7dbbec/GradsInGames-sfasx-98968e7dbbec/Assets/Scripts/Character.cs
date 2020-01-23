@@ -7,7 +7,6 @@ public class Character : MonoBehaviour
     [SerializeField] private float SingleNodeMoveTime = 0.5f;
 
     public EnvironmentTile CurrentPosition { get; set; }
-    public bool Moving { get; set; }
 
     private IEnumerator DoMove(Vector3 position, Vector3 destination)
     {
@@ -42,7 +41,6 @@ public class Character : MonoBehaviour
                 CurrentPosition = route[count];
                 position = next;
             }
-            Moving = false;
         }
     }
 
@@ -50,10 +48,7 @@ public class Character : MonoBehaviour
     {
         // Clear all coroutines before starting the new route so 
         // that clicks can interupt any current route animation
-        if (Moving == false) {
-            StopAllCoroutines();
-            StartCoroutine(DoGoTo(route));
-            Moving = true;
-        }
+        StopAllCoroutines();
+        StartCoroutine(DoGoTo(route));
     }
 }
