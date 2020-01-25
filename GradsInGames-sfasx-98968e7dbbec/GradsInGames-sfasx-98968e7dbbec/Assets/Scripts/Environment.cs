@@ -291,4 +291,16 @@ public class Environment : MonoBehaviour
 
         return result;
     }
+    public List<EnvironmentTile> SolveAdjacent(EnvironmentTile begin, EnvironmentTile destination)
+    {
+        for (int i = 0; i < destination.Connections.Count; i++)
+        {
+            List<EnvironmentTile> route = Solve(begin, destination.Connections[i]);
+            if (route != null)
+            {
+                return route;
+            }
+        }
+        return null;
+    }
 }

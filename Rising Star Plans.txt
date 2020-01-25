@@ -1,0 +1,58 @@
+Rising Star Notes
+-----------------
+
+General plans:
+- Import TD models
+- Create proper tile+OnTop child system for tiles
+- Character actions
+- Create enemies with pathfinding
+- Building/Turret system
+- Turret versions
+- Create wave system
+- Create game loop stuff (health, base, money)
+
+Importing models:
+- Will use Kenney assets
+- Might need enemy models still
+
+Tile+Ontop system for tiles:
+- One base tile, then something ontop
+- Object ontop could be harvestable/turret/nothing/solid
+- Possibly "nothing" could be replaced with does_exist bool
+
+Character actions:
+- Actions are: move, build, harvest, upgrade
+- Link coroutines together
+- Move coroutine should link into action
+- Action should be a parameter of move
+- Make character stand on tile for now, add distance later
+- Distance will apply to any solid. You can move next to a solid
+- Start with only one type of building/turret
+
+Enemies:
+- One model at first
+- Just make them follow the player
+- Copy movement coroutine from player
+
+Building/Turret system
+- Start with just one model with set range/damage, no upgrades
+- Constructing/Active bool
+- Constructing takes time
+- Array of versions/upgrades
+- Just make it rotate to enemy for now, 2-part movement later
+
+Turret versions:
+- Cost, build time, damage, range, projectile model, fire rate
+- Check next in array to determine cost/build time
+
+Wave system:
+- Probably controlled by Game, maybe sub object
+- Waves have: Array of enemies, reward (coins), 
+- Start with array of waves, later do generative endless
+
+Game loop stuff:
+- Variables for base health/money/wave/etc.
+- Owned by Game
+- Need communication between other objects to add money/etc.
+
+

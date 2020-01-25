@@ -21,7 +21,8 @@ public class Game : MonoBehaviour
     {
         mRaycastHits = new RaycastHit[NumberOfRaycastHits];
         mMap = GetComponentInChildren<Environment>();
-        mCharacter = Instantiate(Character, transform); 
+        mCharacter = Instantiate(Character, transform);
+        mCharacter.map = mMap;
         ShowMenu(true);
     }
 
@@ -38,8 +39,7 @@ public class Game : MonoBehaviour
                 EnvironmentTile tile = mRaycastHits[0].transform.GetComponent<EnvironmentTile>();
                 if (tile != null)
                 {
-                    List<EnvironmentTile> route = mMap.Solve(mCharacter.CurrentPosition, tile);
-                    mCharacter.GoTo(route);
+                    mCharacter.UseTile(tile);
                 }
             }
         }

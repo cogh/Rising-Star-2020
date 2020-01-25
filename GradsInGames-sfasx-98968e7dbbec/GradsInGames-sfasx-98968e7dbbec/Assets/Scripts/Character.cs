@@ -5,8 +5,10 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [SerializeField] private float SingleNodeMoveTime = 0.5f;
+    private bool busy = false;
 
     public EnvironmentTile CurrentPosition { get; set; }
+    public Environment map;
 
     private IEnumerator DoMove(Vector3 position, Vector3 destination)
     {
@@ -17,7 +19,6 @@ public class Character : MonoBehaviour
 
             Vector3 p = transform.position;
             float t = 0.0f;
-
             while (t < SingleNodeMoveTime)
             {
                 t += Time.deltaTime;
@@ -44,11 +45,50 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void GoTo(List<EnvironmentTile> route)
+    private IEnumerator DoHarvest(EnvironmentTile tile)
+    {
+        for (int i = 0; i < 60; i++)
+        {
+            yield return null;
+        }
+        Destroy(tile.gameObject.transform.Find("OnTop").gameObject);
+        Debug.Log("Harvested");
+        tile.IsAccessible = true;
+        busy = false;
+        yield return null;
+    }
+
+    private IEnumerator DoUseTile(EnvironmentTile tile)
+    {
+        // Go to
+        List<EnvironmentTile> route = map.Solve(CurrentPosition, tile);
+        if (route != null)
+        {
+            yield return DoGoTo(route);
+        }
+        // Harvest
+        else
+        {
+            Debug.Log("Searching for adjacent route");
+            List<EnvironmentTile> adjacent_route = map.SolveAdjacent(CurrentPosition, tile);
+            if (adjacent_route != null)
+            {
+                Debug.Log("Adjacent route found");
+                yield return DoGoTo(adjacent_route);
+                Debug.Log("Harvesting");
+                yield return DoHarvest(tile);
+            }
+        }
+    }
+
+    public void UseTile(EnvironmentTile tile)
     {
         // Clear all coroutines before starting the new route so 
         // that clicks can interupt any current route animation
-        StopAllCoroutines();
-        StartCoroutine(DoGoTo(route));
+        if (!busy)
+        {
+            StopAllCoroutines();
+            StartCoroutine(DoUseTile(tile));
+        }
     }
 }
