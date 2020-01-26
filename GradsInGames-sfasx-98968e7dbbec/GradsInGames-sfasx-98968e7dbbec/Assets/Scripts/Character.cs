@@ -59,6 +59,34 @@ public class Character : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator DoBuild(EnvironmentTile tile)
+    {
+        for (int i = 0; i < 60; i++)
+        {
+            yield return null;
+        }
+        ManagePlacement script = tile.GetComponent<ManagePlacement>();
+        script.Build();
+        Debug.Log("Built");
+        tile.IsAccessible = true;
+        busy = false;
+        yield return null;
+    }
+
+    private IEnumerator DoUpgrade(EnvironmentTile tile)
+    {
+        for (int i = 0; i < 60; i++)
+        {
+            yield return null;
+        }
+        ManagePlacement script = tile.GetComponent<ManagePlacement>();
+        script.Upgrade();
+        Debug.Log("Built");
+        tile.IsAccessible = true;
+        busy = false;
+        yield return null;
+    }
+
     private IEnumerator DoUseTile(EnvironmentTile tile)
     {
         // Go to
@@ -82,6 +110,37 @@ public class Character : MonoBehaviour
         }
     }
 
+    private IEnumerator DoBuildTile(EnvironmentTile tile)
+    {
+        // Go to
+        List<EnvironmentTile> route = map.Solve(CurrentPosition, tile);
+        if (route != null && route.Count > 2)
+        {
+            Debug.Log("Searching for adjacent route");
+            List<EnvironmentTile> adjacent_route = map.SolveAdjacent(CurrentPosition, tile);
+            if (adjacent_route != null)
+            {
+                Debug.Log("Adjacent route found");
+                yield return DoGoTo(adjacent_route);
+                Debug.Log("Building");
+                yield return DoBuild(tile);
+            }
+        }
+        // Build
+        else
+        {
+            Debug.Log("Searching for adjacent route");
+            List<EnvironmentTile> adjacent_route = map.SolveAdjacent(CurrentPosition, tile);
+            if (adjacent_route != null)
+            {
+                Debug.Log("Adjacent route found");
+                yield return DoGoTo(adjacent_route);
+                Debug.Log("Upgrading");
+                yield return DoUpgrade(tile);
+            }
+        }
+    }
+
     public void UseTile(EnvironmentTile tile)
     {
         // Clear all coroutines before starting the new route so 
@@ -90,6 +149,17 @@ public class Character : MonoBehaviour
         {
             StopAllCoroutines();
             StartCoroutine(DoUseTile(tile));
+        }
+    }
+
+    public void BuildTile(EnvironmentTile tile)
+    {
+        // Clear all coroutines before starting the new route so 
+        // that clicks can interupt any current route animation
+        if (!busy)
+        {
+            StopAllCoroutines();
+            StartCoroutine(DoBuildTile(tile));
         }
     }
 }

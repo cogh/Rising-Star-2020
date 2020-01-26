@@ -25,6 +25,8 @@ public class Game : MonoBehaviour
     private EnvironmentTile mEnemyBaseTile;
     private EnvironmentTile mPlayerBaseTile;
     private readonly int NumberOfRaycastHits = 1;
+    private float spawnPause = 10;
+    private int spawnDelay = 120;
     
 
     void Start()
@@ -37,7 +39,7 @@ public class Game : MonoBehaviour
         ShowMenu(true);
         wood = 0;
         stone = 0;
-        time = 60;
+        time = 10;
         wave = 1;
         health = 10;
     }
@@ -45,7 +47,7 @@ public class Game : MonoBehaviour
     void SpawnEnemy()
     {
         // Using specific prefab
-        GameObject enemy = Instantiate(EnemyType, transform);
+        GameObject enemy = Instantiate(EnemyType, mMap.EnemySpawn.gameObject.transform);
         enemy.GetComponent<Enemy>().map = mMap;
         enemy.GetComponent<Enemy>().CurrentPosition = mMap.EnemySpawn;
         enemy.GetComponent<Enemy>().UseTile(mMap.PlayerSpawn);
@@ -80,14 +82,30 @@ public class Game : MonoBehaviour
                 EnvironmentTile tile = mRaycastHits[0].transform.GetComponent<EnvironmentTile>();
                 if (tile != null)
                 {
-                    mCharacter.UseTile(tile);
+                    mCharacter.BuildTile(tile);
                 }
             }
         }
         // Spawn enemy
         if (Input.GetKeyDown(KeyCode.S))
         {
+            //SpawnEnemy();
+        }
+        if (Time.frameCount % spawnDelay == 0 && spawnPause <= 0)
+        {
             SpawnEnemy();
+            time--;
+        }
+        if (time <= 0)
+        {
+            wave++;
+            spawnPause = 8;
+            time = 10;
+            spawnDelay /= 2;
+        }
+        if (spawnPause > 0)
+        {
+            spawnPause -= Time.deltaTime;
         }
     }
 

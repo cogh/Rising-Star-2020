@@ -7,10 +7,14 @@ public class ManagePlacement : MonoBehaviour
     public GameObject[] placement_list;
     private GameObject current_placement;
     private Game gameScript;
+    public bool newPlacementOnStart;
     // Start is called before the first frame update
     void Start()
     {
-        NewPlacement();
+        if (newPlacementOnStart)
+        {
+            NewPlacement();
+        }
         GameObject game = GameObject.Find("Game");
         gameScript = game.GetComponent<Game>();
     }
@@ -26,10 +30,23 @@ public class ManagePlacement : MonoBehaviour
 
     public void NewPlacement()
     {
-        GameObject new_placement = placement_list[Random.Range(0, placement_list.Length)];
-        Vector3 new_position = transform.position + new Vector3(5,3,5);
+        GameObject new_placement = placement_list[Random.Range(1, placement_list.Length)];
+        Vector3 new_position = transform.position + new Vector3(5, 3, 5);
         Destroy(current_placement);
         current_placement = Instantiate(new_placement, new_position, transform.rotation);
+    }
+
+    public void Build()
+    {
+        if (gameScript.stone > 0 && gameScript.wood > 0)
+        {
+            GameObject new_placement = placement_list[0];
+            Vector3 new_position = transform.position + new Vector3(5, 3, 5);
+            Destroy(current_placement);
+            current_placement = Instantiate(new_placement, new_position, transform.rotation);
+            gameScript.wood--;
+            gameScript.stone--;
+        }
     }
 
     public void Harvest()
@@ -48,6 +65,6 @@ public class ManagePlacement : MonoBehaviour
 
     public void Upgrade()
     {
-        Destroy(current_placement);
+        //Destroy(current_placement);
     }
 }

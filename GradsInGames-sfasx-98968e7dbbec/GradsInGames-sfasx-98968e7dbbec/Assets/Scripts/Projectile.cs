@@ -15,4 +15,11 @@ public class Projectile : MonoBehaviour
     {
         transform.position += transform.forward;
     }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        Debug.Log("Bullet collides with enemy");
+        collider.gameObject.GetComponent<Enemy>().dead = true;
+        Destroy(gameObject);
+    }
 }

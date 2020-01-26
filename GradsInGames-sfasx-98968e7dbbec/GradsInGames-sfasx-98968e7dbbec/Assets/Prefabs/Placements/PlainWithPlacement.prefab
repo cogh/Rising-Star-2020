@@ -136,3 +136,4 @@ MonoBehaviour:
   - {fileID: 3233755595404071143, guid: f97b3c3768acb0c429fc9c045d506594, type: 3}
   - {fileID: 7601873978206057839, guid: 4379ae20a6e71f746bf32cc2bae391b5, type: 3}
   - {fileID: 8757892251698438400, guid: b902c02f5c9cfe742b085297066b1b58, type: 3}
+  newPlacementOnStart: 1

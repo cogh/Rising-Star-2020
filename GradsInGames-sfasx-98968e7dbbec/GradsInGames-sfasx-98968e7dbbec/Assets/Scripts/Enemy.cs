@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
 
     public EnvironmentTile CurrentPosition { get; set; }
     public Environment map;
+    public bool dead;
 
     Time time;
 
@@ -30,6 +31,11 @@ public class Enemy : MonoBehaviour
         if (CurrentPosition == map.PlayerSpawn)
         {
             gameScript.health--;
+            dead = true;
+        }
+        if (dead == true)
+        {
+            gameScript.enemy_list.Remove(gameObject);
             Destroy(gameObject);
         }
     }
