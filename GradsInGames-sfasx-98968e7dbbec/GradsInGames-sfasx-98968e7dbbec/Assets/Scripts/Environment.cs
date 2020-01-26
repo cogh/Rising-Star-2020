@@ -19,6 +19,17 @@ public class Environment : MonoBehaviour
     private const float TileHeight = 2.5f;
 
     public EnvironmentTile Start { get; private set; }
+    public EnvironmentTile EnemySpawn { get; private set; }
+    public EnvironmentTile PlayerSpawn { get; private set; }
+
+
+    public EnvironmentTile GetRandom()
+    {
+        int x = Random.Range(0, Size.x - 1);
+        int y = Random.Range(0, Size.y - 1);
+        EnvironmentTile target = mMap[x][y];
+        return target;
+    }
 
     private void Awake()
     {
@@ -108,6 +119,8 @@ public class Environment : MonoBehaviour
             position.x += TileSize;
             position.z = -(halfHeight * TileSize);
         }
+        EnemySpawn = mMap[0][halfHeight];
+        PlayerSpawn = mMap[Size.x-1][halfHeight];
     }
 
     private void SetupConnections()
@@ -296,7 +309,7 @@ public class Environment : MonoBehaviour
         for (int i = 0; i < destination.Connections.Count; i++)
         {
             List<EnvironmentTile> route = Solve(begin, destination.Connections[i]);
-            if (route != null)
+            if (route != null && route.Count > 2)
             {
                 return route;
             }

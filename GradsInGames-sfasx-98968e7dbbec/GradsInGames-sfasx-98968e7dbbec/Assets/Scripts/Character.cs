@@ -51,7 +51,8 @@ public class Character : MonoBehaviour
         {
             yield return null;
         }
-        Destroy(tile.gameObject.transform.Find("OnTop").gameObject);
+        ManagePlacement script = tile.GetComponent<ManagePlacement>();
+        script.Harvest();
         Debug.Log("Harvested");
         tile.IsAccessible = true;
         busy = false;
@@ -62,7 +63,7 @@ public class Character : MonoBehaviour
     {
         // Go to
         List<EnvironmentTile> route = map.Solve(CurrentPosition, tile);
-        if (route != null)
+        if (route != null && route.Count > 2)
         {
             yield return DoGoTo(route);
         }
